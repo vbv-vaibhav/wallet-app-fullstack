@@ -1,8 +1,10 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 
 mongoose.connect(process.env.DATABASE_URL);
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -31,8 +33,22 @@ const userSchema = mongoose.Schema({
   },
 });
 
+const accountSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId, // Reference to User model
+    ref: "User",
+    required: true,
+  },
+  balance: {
+    type: Number,
+    required: true,
+  },
+});
+
+const Account = mongoose.model("Account", accountSchema);
 const User = mongoose.model("User", userSchema);
 
 module.exports = {
   User,
+  Account,
 };

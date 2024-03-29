@@ -1,20 +1,21 @@
-import express from "express";
-import zod from "zod";
-import { User } from "../db";
-import jwt from "jsonwebtoken";
-import { authMiddleware } from "../middleware";
+const express = require("express");
+const router = express.Router();
+const zod = require("zod");
+const { User, Account } = require("../db");
+const jwt = require("jsonwebtoken");
+const { authMiddleware } = require("../middleware");
+const dotenv = require("dotenv");
+dotenv.config();
 
-export const userRouter = express.Router();
-
-const signUpBody = zod.object({
+const signupBody = zod.object({
   username: zod.string().email(),
-  password: zod.string().min(6),
-  firstName: zod.string().max(50),
-  lastName: zod.string().max(50),
+  firstName: zod.string(),
+  lastName: zod.string(),
+  password: zod.string(),
 });
 
-userRouter.post("/signup", async (req, res) => {
-  const { success } = signUpBody.safeParse(req.body);
+router.post("/signup", async (req, res) => {
+  const { success } = signupBody.safeParse(req.body);
   if (!success) {
     return res.status(411).json({
       message: "Incorrect inputs",
@@ -37,8 +38,12 @@ userRouter.post("/signup", async (req, res) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
   });
-
   const userId = user._id;
+
+  await Account.create({
+    userId,
+    balance: 1 + Math.random() * 100000,
+  });
 
   const token = jwt.sign(
     {
@@ -53,20 +58,20 @@ userRouter.post("/signup", async (req, res) => {
   });
 });
 
-const signInBody = zod.object({
+const signinBody = zod.object({
   username: zod.string().email(),
-  password: zod.string().min(6),
+  password: zod.string(),
 });
 
-userRouter.post("/signin", async (req, res) => {
-  const { success } = signInBody.safeParse(req.body);
+router.post("/signin", async (req, res) => {
+  const { success } = signinBody.safeParse(req.body);
   if (!success) {
     return res.status(411).json({
-      message: "Invalid Inputs",
+      message: "Incorrect inputs",
     });
   }
 
-  const user = User.findOne({
+  const user = await User.findOne({
     username: req.body.username,
     password: req.body.password,
   });
@@ -80,9 +85,9 @@ userRouter.post("/signin", async (req, res) => {
     );
 
     res.json({
+      message: "Signed in successfully",
       token,
     });
-
     return;
   }
 
@@ -92,12 +97,12 @@ userRouter.post("/signin", async (req, res) => {
 });
 
 const updateBody = zod.object({
-  password: zod.string().min(6),
-  firstName: zod.string().max(50),
-  lastName: zod.string().max(50),
+  password: zod.string().optional(),
+  firstName: zod.string().optional(),
+  lastName: zod.string().optional(),
 });
 
-userRouter.put("/", authMiddleware, async (req, res) => {
+router.put("/", authMiddleware, async (req, res) => {
   const { success } = updateBody.safeParse(req.body);
   if (!success) {
     res.status(411).json({
@@ -105,13 +110,16 @@ userRouter.put("/", authMiddleware, async (req, res) => {
     });
   }
 
-  await User.updateOne({ _id: req.userId }, req.body);
+  await User.updateOne(req.body, {
+    id: req.userId,
+  });
+
   res.json({
-    message: "User info updated successfully",
+    message: "Updated successfully",
   });
 });
 
-userRouter.get("/bulk", async (req, res) => {
+router.get("/bulk", async (req, res) => {
   const filter = req.query.filter || "";
 
   const users = await User.find({
@@ -138,3 +146,5 @@ userRouter.get("/bulk", async (req, res) => {
     })),
   });
 });
+
+module.exports = router;
