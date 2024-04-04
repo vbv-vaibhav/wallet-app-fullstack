@@ -7,7 +7,7 @@ const AppBar = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/v1/user/name", {
+      .get("https://wallet-app-backend-ashen.vercel.app/api/v1/user/name", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
