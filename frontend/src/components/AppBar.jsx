@@ -18,10 +18,10 @@ const AppBar = () => {
   }, []);
 
   const handleOnclick = () => {
-    setInterval(() => {
+    setTimeout(() => {
       localStorage.removeItem("token");
       navigate("/signin");
-    }, 1000);
+    }, 1500);
   };
   return (
     <div className="shadow-lg h-14 flex justify-between">
