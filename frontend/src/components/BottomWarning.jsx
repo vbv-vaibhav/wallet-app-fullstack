@@ -5,7 +5,7 @@ const BottomWarning = ({ label, buttonText, to }) => {
     <div className="py-2 text-sm flex justify-center">
       <div>{label}</div>
       <Link
-        className="pointer underline pl-1 cursor-pointer hover:scale-105 duration-300"
+        className="pointer underline text-blue-600 pl-1 cursor-pointer hover:scale-105 duration-300"
         to={to}
       >
         {buttonText}
