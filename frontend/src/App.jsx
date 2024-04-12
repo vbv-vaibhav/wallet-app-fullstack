@@ -4,6 +4,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import SendMoney from "./pages/SendMoney";
 import Receipt from "./pages/Receipt";
+import UpdateInfo from "./pages/UpdateInfo";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/send" element={<SendMoney />} />
           <Route path="/receipt" element={<Receipt />} />
+          <Route path="/updateinfo" element={<UpdateInfo />} />
         </Routes>
       </BrowserRouter>
     </>
