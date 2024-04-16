@@ -48,6 +48,21 @@ const Signup = () => {
             }}
             placeholder="New Password"
             label={"Password"}
+            onKeyDown={async (e) => {
+              if (e.key === "Enter") {
+                const response = await axios.post(
+                  "https://wallet-app-backend-ashen.vercel.app/api/v1/user/signup",
+                  {
+                    username,
+                    password,
+                    firstName,
+                    lastName,
+                  }
+                );
+                localStorage.setItem("token", response.data.token);
+                navigate("/dashboard");
+              }
+            }}
           />
           <div className="pt-4">
             <Button

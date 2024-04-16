@@ -1,4 +1,10 @@
-const InputBox = ({ label, placeholder, onChange, type = "text" }) => {
+const InputBox = ({
+  label,
+  placeholder,
+  onChange,
+  onKeyDown,
+  type = "text",
+}) => {
   return (
     <div>
       <div className="text-sm font-medium text-left py-2">{label}</div>
@@ -7,6 +13,7 @@ const InputBox = ({ label, placeholder, onChange, type = "text" }) => {
         onChange={onChange}
         placeholder={placeholder}
         className="w-full px-2 py-1 border rounded border-slate-200 hover:border-slate-600 duration-300"
+        onKeyDown={onKeyDown}
       />
     </div>
   );

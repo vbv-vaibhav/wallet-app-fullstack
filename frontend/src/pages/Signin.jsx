@@ -34,6 +34,19 @@ const Signin = () => {
             type="password"
             placeholder="Your Password"
             label={"Password"}
+            onKeyDown={async (e) => {
+              if (e.key === "Enter") {
+                const response = await axios.post(
+                  "https://wallet-app-backend-ashen.vercel.app/api/v1/user/signin",
+                  {
+                    username,
+                    password,
+                  }
+                );
+                localStorage.setItem("token", response.data.token);
+                navigate("/dashboard");
+              }
+            }}
           />
           <div className="pt-4">
             <Button
